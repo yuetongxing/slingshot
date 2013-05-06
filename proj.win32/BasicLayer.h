@@ -23,7 +23,7 @@ public:
 
 	void setBackGround (const char* backimagename);
 
-
+	
 
 
 };

@@ -9,7 +9,7 @@ Game::Game(void)
 
 Game::~Game(void)
 {
-	CC_SAFE_RELEASE(pigarray);
+	//CC_SAFE_RELEASE(pigarray);
 	//CC_SAFE_DELETE(pigarray);
 }
 
@@ -31,15 +31,18 @@ void Game::setupViews()
      setBackGround("gamebackground.png");
 
 	 CCSpriteFrameCache::sharedSpriteFrameCache()->addSpriteFramesWithFile("playimage.plist","playimage.png");
+
+	  CCSize s = CCDirector::sharedDirector()->getWinSize();
+
 //	 CCSprite* pPlay = CCSprite::createWithSpriteFrameName("pig02.png");
 //	 pPlay->setPosition(ccp(getWinSize().width/5,pPlay->getContentSize().height/2));
 //	 this->addChild(pPlay,1);
-	 CCActionInterval* pactionjump = CCJumpTo::create(3.0f,ccp(getWinSize().width*0.7,0),getWinSize().height*0.8,2);
+//	 CCActionInterval* pactionjump = CCJumpTo::create(3.0f,ccp(getWinSize().width*0.7,0),getWinSize().height*0.8,2);
 //	 pPlay->runAction(pactionjump);
 
-	 CCSpriteBatchNode* pbatchnode = CCSpriteBatchNode::create("playimage.png");
+//	 CCSpriteBatchNode* pbatchnode = CCSpriteBatchNode::create("playimage.png");
 	 
-	  this->addChild(pbatchnode);
+//	  this->addChild(pbatchnode);
 	 //CCSprite *psprite1 = CCSprite::createWithSpriteFrameName("pig01.png");
 	 //CCSprite *psprite2 = CCSprite::createWithSpriteFrameName("pig02.png");
 	 //CCSprite *psprite3 = CCSprite::createWithSpriteFrameName("pig03.png");
@@ -51,33 +54,70 @@ void Game::setupViews()
 	 //pbatchnode->addChild(psprite4);
 	 //
 	
-
+	
 	 //psprite1->setposition(ccp(100,200));
 	 //psprite2->setposition(ccp(200,200));
 	 //psprite3->setposition(ccp(300,200));
 	 //psprite4->setposition(ccp(400,200));
 
-	  pigarray= CCArray::create();
-	  CC_SAFE_RETAIN(pigarray);
-	  for(int i=0; i<5; i++)
-	  {
-		  CCSprite* pPig = CCSprite::createWithSpriteFrameName("pig01.png");
-		  pbatchnode->addChild(pPig);
-		  pigarray->addObject(pPig);
+	 // pigarray= CCArray::create();
+	 // CC_SAFE_RETAIN(pigarray);
+	 // for(int i=0; i<5; i++)
+	 // {
+		//  CCSprite* pPig = CCSprite::createWithSpriteFrameName("pig01.png");
+		//  pbatchnode->addChild(pPig);
+		//  pigarray->addObject(pPig);
 
-	  }
-	 pbatchnode->setPosition(ccp(0,0));
+	 // }
+	 //pbatchnode->setPosition(ccp(0,0));
 
-	 int mgap = 20;
+	 //int mgap = 20;
 	
-	 for (unsigned int i = 0; i < (pigarray->count()); i++)
-	 {
-		 CCSprite* psprite =(CCSprite*) pigarray->objectAtIndex(i);
-		 psprite->setPosition(ccp((50+i*100),0));
+	 //for (unsigned int i = 0; i < (pigarray->count()); i++)
+	 //{
+		// CCSprite* psprite =(CCSprite*) pigarray->objectAtIndex(i);
+		// psprite->setPosition(ccp((50+i*100),0));
 
-		 //psprite->runAction(pactionjump);
-	 }
-	 pbatchnode->runAction(pactionjump);
+		// //psprite->runAction(pactionjump);
+	 //}
+	 //pbatchnode->runAction(pactionjump);
+
+	  CCPointArray* parray = CCPointArray::create(10);
+	  parray->addControlPoint(ccp(s.width*16/48,s.height*80/80));
+	  parray->addControlPoint(ccp(s.width*10/48,s.height*70/80));
+	  parray->addControlPoint(ccp(s.width*9/48,s.height*60/80));
+	  parray->addControlPoint(ccp(s.width*19/48,s.height*53/80));
+	  parray->addControlPoint(ccp(s.width*31/48,s.height*47/80));
+	  parray->addControlPoint(ccp(s.width*36/48,s.height*39/80));
+	  parray->addControlPoint(ccp(s.width*31/48,s.height*27/80));
+	  parray->addControlPoint(ccp(s.width*19/48,s.height*20/80));
+	  parray->addControlPoint(ccp(s.width*10/48,s.height*12/80));
+	  parray->addControlPoint(ccp(s.width*0/48,s.height*9/80));
+
+	  CCPointArray* aparray = CCPointArray::create(10);
+	  aparray->addControlPoint(ccp(s.width*16/48,s.height*80/80));
+	  aparray->addControlPoint(ccp(s.width*16/48,s.height*70/80));
+	  aparray->addControlPoint(ccp(s.width*16/48,s.height*60/80));
+	  aparray->addControlPoint(ccp(s.width*16/48,s.height*50/80));
+	  aparray->addControlPoint(ccp(s.width*16/48,s.height*40/80));
+	  aparray->addControlPoint(ccp(s.width*16/48,s.height*30/80));
+
+	  CCMoveBy moveby
+	  CCSprite* ppig = CCSprite::createWithSpriteFrameName("pig02.png");
+	  ppig->setPosition(ccp(s.width*16/48,s.height*80/80));
+	  this->addChild(ppig);
+	  CCCardinalSplineTo* actionsplingby = CCCardinalSplineBy::create(3,aparray,2);
+	  CCActionInterval* preverse = actionsplingby->reverse();
+	  CCFiniteTimeAction* actionall = CCSequence::create(actionsplingby,preverse,NULL);
+
+	  CCCardinalSplineTo* actionsolingto = CCCardinalSplineTo::create(3,parray,1);
+	  CCActionInterval* preverseslingto = actionsolingto->reverse();
+	  CCFiniteTimeAction* actionaslingtoall = CCSequence::create(actionsolingto,preverseslingto,NULL);
+     
+
+
+	  ppig->runAction(actionall);
+
 
 
 }
